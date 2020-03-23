@@ -193,6 +193,7 @@ namespace SimplifyXR
         public void CreateARSession()
         {
 #if USING_ARFOUNDATION && SIMPLIFYXR_ARFOUNDATION_PRESENT
+Debug.Log("Creating AR Session");
             EditorApplication.ExecuteMenuItem("GameObject/XR/AR Session");
 #endif
         }
@@ -200,12 +201,15 @@ namespace SimplifyXR
         public GameObject CreateARSessionOrigin(int targetType, ScriptableObject imageDatabase)
         {
 #if USING_ARFOUNDATION && SIMPLIFYXR_ARFOUNDATION_PRESENT
+Debug.Log("Creating AR Session Origin");
             EditorApplication.ExecuteMenuItem("GameObject/XR/AR Session Origin");
-
             GameObject sessionOrigin = GameObject.FindObjectOfType<ARSessionOrigin>().gameObject;
+Debug.Log("Origin Created");
 
             if (targetType == 0)
             {
+                Debug.Log("Adding Referenec Image Library");
+
                 ARTrackedImageManager imageManager = sessionOrigin.AddComponent<ARTrackedImageManager>();
 
                 if (imageDatabase.GetType().IsAssignableFrom(typeof(XRReferenceImageLibrary)))
@@ -221,6 +225,8 @@ namespace SimplifyXR
             }
             else if (targetType == 1)
             {
+                Debug.Log("Adding image");
+
                 ARPlaneManager planeManager = sessionOrigin.AddComponent<ARPlaneManager>();
                 GameObject prefab = SimplifyXREditorUtilityMethods.FindPrefabInAssets("SXR Default Plane");
                 if (prefab != null)
@@ -229,10 +235,14 @@ namespace SimplifyXR
                     SimplifyXRDebug.SimplifyXRLog(SimplifyXRDebug.Type.Error, "[DEVELOPER ERROR] No SXR Default Plane prefab in project", SimplifyXRDebug.Args());
             }
 
+    Debug.Log("Adding RaycastManager");
+
             sessionOrigin.AddComponent<ARRaycastManager>();
 
             Camera theCam = sessionOrigin.GetComponentInChildren<Camera>();
             theCam.tag = "MainCamera";
+            
+            Debug.Log("origin Operations complete");
 
             return sessionOrigin;
 #else
